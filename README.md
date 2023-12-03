@@ -6,6 +6,7 @@ Uses Selenium to grab prices from Amazon.
 This simple Python program utilizes the Selenium library to scrape the price of a product on Amazon. It automates the process of opening a Chrome browser, navigating to a specific Amazon product page, and extracting the price information.
 
 **Prerequisites**
+
 Before running the script, make sure you have the following installed:
 - Python (the code is written in Python 3)
 - Selenium library

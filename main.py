@@ -1,98 +1,77 @@
-import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from tkinter import Text, simpledialog, Tk, messagebox, Toplevel, Label, CENTER, font, Entry, StringVar
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from tkinter import Tk, Label, Entry, Toplevel, simpledialog, Button, Listbox, Scrollbar
 import pyperclip
 
-# Keep Chrome open after program finishes
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_experimental_option("detach", True)
+class CustomDialog(simpledialog.Dialog):
+    def body(self, master):
+        self.title("URL Input")
+        Label(master, text="Please enter the Amazon URL:").grid(row=0)
+        self.e1 = Entry(master, width=100)
+        self.e1.grid(row=0, column=1)
+        return self.e1 # initial focus
 
-# Disable the logging
-caps = DesiredCapabilities.CHROME
-caps['loggingPrefs'] = {'performance': 'OFF'}
+    def apply(self):
+        url = self.e1.get()
+        product_id = url.split("/dp/")[1].split("/")[0] if "/dp/" in url else ""
+        product_name = url.split("amazon.com/")[1].split("/dp")[0].replace("-", " ") if "amazon.com/" in url and "/dp" in url else ""
+        pyperclip.copy(product_id)  # Copy the product ID to the clipboard
 
-# Create a dialog to ask for the URL
+        # Add the URL to the history listbox
+        history_listbox.insert(0, url)
+
+        # Create a new window with a blue background
+        new_window = Toplevel(root, bg='light blue')
+        new_window.title("URL and Product ID")
+
+        # Create an Entry widget displaying the URL with a larger, bold font
+        url_label = Label(new_window, text="URL:", font=("Arial", 18, "bold"), bg='light blue')
+        url_label.pack(padx=20, pady=20)  # Add more padding
+        url_entry = Entry(new_window, width=100, font=("Arial", 18))
+        url_entry.insert(0, url)  # Insert the URL into the Entry widget
+        url_entry.pack(padx=20, pady=20)  # Add more padding
+        url_entry.bind('<ButtonRelease-1>', self.select_all)  # Bind the select_all function to the left mouse button release event
+
+        # Create an Entry widget for the product name with a larger, bold font
+        product_name_label = Label(new_window, text="Product Name:", font=("Arial", 18, "bold"), bg='light blue')
+        product_name_label.pack(padx=20, pady=20)  # Add more padding
+        product_name_entry = Entry(new_window, width=100, font=("Arial", 18))  # Set the width to 100
+        product_name_entry.insert(0, product_name)  # Insert the product name into the Entry widget
+        product_name_entry.pack(padx=20, pady=20)  # Add more padding
+        product_name_entry.bind('<ButtonRelease-1>', self.select_all)  # Bind the select_all function to the left mouse button release event
+
+        # Create an Entry widget displaying the product ID with a larger, bold font
+        product_id_label = Label(new_window, text="Product ID:", font=("Arial", 18, "bold"), bg='light blue')
+        product_id_label.pack(padx=20, pady=20)  # Add more padding
+        product_id_entry = Entry(new_window, width=100, font=("Arial", 18))
+        product_id_entry.insert(0, product_id)  # Insert the product ID into the Entry widget
+        product_id_entry.pack(padx=20, pady=20)  # Add more padding
+        product_id_entry.bind('<ButtonRelease-1>', self.select_all)  # Bind the select_all function to the left mouse button release event
+
+        # Create a button for entering another URL with a larger, bold font
+        enter_url_button = Button(new_window, text="Enter another URL", command=self.enter_new_url, font=("Arial", 18, "bold"))
+        enter_url_button.pack(padx=20, pady=20)  # Add more padding
+
+    def enter_new_url(self):
+        # Open the custom dialog for entering another URL
+        d = CustomDialog(root)
+
+    def select_all(self, event):
+        # Select all the text in the Entry widget
+        event.widget.select_range(0, 'end')
+        event.widget.focus()
+
 root = Tk()
-root.withdraw()  # Hide the main window
-url = simpledialog.askstring("URL Input", "Please enter the Amazon URL:")
 
-# Open Chrome and go to Amazon
-driver = webdriver.Chrome(options=chrome_options)
-driver.get(url) 
+# Create a listbox for the history of URLs
+history_listbox = Listbox(root)
+history_listbox.pack(side="right", fill="both", expand=True)
 
-def on_input(evt):
-    # Function to be called whenever the user types something
-    content = captcha_code.get()
-    if len(content) == 6:  # If the user has typed in six characters
-        root.withdraw()  # Hide the main window
-        time.sleep(1)  # Wait for the window to be hidden
+# Add a scrollbar to the listbox
+scrollbar = Scrollbar(history_listbox)
+scrollbar.pack(side="right", fill="y")
 
-try:
-    # Wait for the code input field to be present
-    wait = WebDriverWait(driver, 10)
-    try:
-        code_input = wait.until(EC.presence_of_element_located((By.ID, 'captchacharacters')))
+# Attach the scrollbar to the listbox
+history_listbox.config(yscrollcommand=scrollbar.set)
+scrollbar.config(command=history_listbox.yview)
 
-        # Ask the user for the code
-        root.deiconify()  # Show the main window
-        root.title("Code Input")
-        root.attributes('-topmost', 1)  # Keep the window on top
-        Label(root, text="Please enter the captcha:").pack()
-        captcha_code = StringVar()
-        captcha_entry = Entry(root, textvariable=captcha_code, font=("Helvetica", 16))
-        captcha_entry.pack()
-        captcha_entry.bind('<KeyRelease>', on_input)
-        root.mainloop()
-
-        # After the window is destroyed, you can still access the captcha code
-        print("Captcha code:", captcha_code.get())
-
-        # Enter the code
-        code = captcha_code.get()
-        code_input.send_keys(code)
-
-        # Find the submit button and click it
-        submit_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@type='submit' and @class='a-button-text' and text()='Continue shopping']")))
-        submit_button.click()
-    except TimeoutException:
-        # Captcha did not appear, do nothing
-        pass
-
-    # Wait for the product page to load
-    wait.until(EC.element_to_be_clickable((By.ID, 'productTitle')))
-
-    # Get product id from url between /dp/ and /ref
-    product_id = driver.current_url.split("/dp/")[1].split("/")[0]
-    pyperclip.copy(product_id)  # Copy the product ID to the clipboard
-
-    # Make the main window visible again
-    root.deiconify()
-
-    # Create a custom dialog box
-    dialog = Toplevel(root)
-    dialog.title("Product Information")
-    dialog.geometry("400x300")  # Set the size of the dialog box
-
-    # Center the dialog box
-    window_width = dialog.winfo_reqwidth()
-    window_height = dialog.winfo_reqheight()
-    position_right = int(dialog.winfo_screenwidth()/2 - window_width/2)
-    position_down = int(dialog.winfo_screenheight()/2 - window_height/2)
-    dialog.geometry("+{}+{}".format(position_right, position_down))
-
-    # Add a text widget with the product ID
-    text = Text(dialog, font=("Helvetica", 16), padx=20, pady=20)
-    text.insert('1.0', f"Product ID: {product_id}")
-    text.pack(padx=20, pady=20)  # Add padding around the text widget
-
-    dialog.mainloop()  # Keep the dialog box open
-except Exception as e:
-    print(f"An error occurred: {e}")
-finally:
-    driver.quit()  # Close the browser
+d = CustomDialog(root)
+root.mainloop()  # Start the main event loop

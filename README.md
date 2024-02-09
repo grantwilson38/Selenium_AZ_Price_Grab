@@ -14,8 +14,8 @@ Before running the script, make sure you have the following installed:
 - ChromeDriver (ensure it matches your Chrome browser version)
 
 **Usage**
-- Replace the URL in the driver.get() method with the URL of the Amazon product you want to track.
-- Run the script using the following command: python amazon_price_scraper.py
+- Replace the URL in the `driver.get()` method with the URL of the Amazon product you want to track.
+- Run the script using the following command: `python main.py`
 
 **Important Note**
 
@@ -31,9 +31,9 @@ The final price is printed to the console.
 **Additional Configuration**
 
 The code includes an option to keep the Chrome browser open even after the program finishes. If this behavior is not desired, you can remove or modify the following lines:
-- chrome_options = webdriver.ChromeOptions()
-- chrome_options.add_experimental_option("detach", True)
-- driver = webdriver.Chrome(options=chrome_options)
+- `chrome_options = webdriver.ChromeOptions()`
+- `chrome_options.add_experimental_option("detach", True)`
+- `driver = webdriver.Chrome(options=chrome_options)`
 
 **Disclaimer**
 

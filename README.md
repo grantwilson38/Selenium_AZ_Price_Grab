@@ -1,5 +1,3 @@
-Amazon URL Extractor - README.md
-
 Overview:
 
 This Python application, Amazon URL Extractor, simplifies the process of retrieving product information from Amazon URLs. It leverages Qt5 for a user-friendly graphical interface (GUI) and provides the following functionalities:

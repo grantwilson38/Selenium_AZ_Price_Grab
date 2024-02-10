@@ -1,40 +1,35 @@
-# Selenium_AZ_Price_Grab
+Amazon URL Extractor - README.md
 
-**Overview**
+Overview:
 
-Uses Selenium to grab prices from Amazon.
+This Python application, Amazon URL Extractor, simplifies the process of retrieving product information from Amazon URLs. It leverages Qt5 for a user-friendly graphical interface (GUI) and provides the following functionalities:
 
-This simple Python program utilizes the Selenium library to scrape the price of a product on Amazon. It automates the process of opening a Chrome browser, navigating to a specific Amazon product page, and extracting the price information.
+Extract Product ID Automatically: Enter an Amazon product URL, and the tool automatically extracts and displays the relevant product ID.
+Display Product Name: The app attempts to determine the product name based on the URL information, offering a user-friendly way to confirm its accuracy.
+Copy Product ID to Clipboard: With a single click, copy the extracted product ID to your clipboard for convenient use in other applications.
+Maintain URL History: View and manage a list of previously entered URLs in a convenient scroll area.
+Customizable Theme: Apply different themes to personalize the look and feel of the interface.
+Requirements:
 
-**Prerequisites**
+Python 3.x
+PyQt5 library (pip install PyQt5)
+Optional: pyperclip library for advanced clipboard operations (pip install pyperclip)
+Installation:
 
-Before running the script, make sure you have the following installed:
-- Python (the code is written in Python 3)
-- Selenium library
-- ChromeDriver (ensure it matches your Chrome browser version)
+Clone or download the repository containing the Python script (main.py).
+Install the required libraries: pip install PyQt5 [pyperclip] (optional).
+Usage:
 
-**Usage**
-- Replace the URL in the `driver.get()` method with the URL of the Amazon product you want to track.
-- Run the script using the following command: `python main.py`
+Run the application by executing python main.py in the terminal.
+Enter an Amazon product URL in the designated field.
+Press Enter or click the "Enter another URL" button.
+The extracted product ID will be displayed and automatically copied to your clipboard.
+The URL will be added to the history list for later reference.
+Customization:
 
-**Important Note**
+The application supports themes that adjust the UI's background and text colors. You can modify the color values in the set_theme function within the script to create your own themes.
 
-Please be aware that web scraping may violate the terms of service of a website. Ensure that you have the right to scrape data from the target website, and use this script responsibly and ethically.
+Additional Notes:
 
-**Explanation of the Code**
-
-The program uses Selenium to automate interactions with the Chrome browser.
-It navigates to the specified Amazon product page.
-It locates the price elements using their class names and extracts the dollar and cents components.
-The final price is printed to the console.
-
-**Additional Configuration**
-
-The code includes an option to keep the Chrome browser open even after the program finishes. If this behavior is not desired, you can remove or modify the following lines:
-- `chrome_options = webdriver.ChromeOptions()`
-- `chrome_options.add_experimental_option("detach", True)`
-- `driver = webdriver.Chrome(options=chrome_options)`
-
-**Disclaimer**
-
-This script should be used responsibly. Be aware of the legal and ethical implications of web scraping, and respect the terms of service of the websites you interact with.
+The product name extraction is based on heuristics and may not always be accurate, especially for URLs with non-standard structures.
+The functionality can be further expanded to include features like price scraping, review analysis, or integration with online price trackers.

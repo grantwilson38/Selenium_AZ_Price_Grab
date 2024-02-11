@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         self.resize(450, 500)
 
         # Set the window icon
-        self.setWindowIcon(QIcon('icons8-new-product-96.png'))
+        self.setWindowIcon(QIcon('box-icon.png'))
 
         # Create the widgets
         self.url_label = QLabel("Amazon URL:")
